@@ -20,10 +20,12 @@
     text-align: center;/*文字居中*/
     box-shadow: 0 1px 1px rgba(100,100,100,.1);
   }
+
   .left, .right {
     width: 60px;
     /*background-color: red;*/
   }
+
   .center {
     flex: 1;
     /*background-color: blue;*/
