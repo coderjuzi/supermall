@@ -10,7 +10,7 @@
 <script>
   export default {
     name: "TabControl",
-    props: {
+    props: {// 父组件使用props把数据向下传给子组件
       titles: {
         type: Array,
         default() {
@@ -26,6 +26,7 @@
     methods: {
       itemClick(index) {
         this.currentIndex = index;
+        this.$emit('tabClick', index)// 子组件使用$emit触发父组件的自定义事件
       }
     }
   }
