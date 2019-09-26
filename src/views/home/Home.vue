@@ -1,8 +1,13 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <!--传参时前面加上冒号则会将数字当做数值型传入，否则会被当做字符串-->
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+    <!--传参时前面加上冒号则会将3/true当做数值型/布尔型传入，否则会被当做字符串-->
+    <scroll class="content"
+            ref="scroll"
+            :probe-type="3"
+            @scroll="contentScroll"
+            :pull-up-load="true"
+            @pullingUp="LoadMore">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -94,6 +99,9 @@
         // 将position的y值和1000作对比，当大于1000时显示BackTop图标
         this.isShowBackTop = -position.y > 1000// y是一个负值，先转为正数
       },
+      LoadMore() {
+        this.getHomeGoods(this.currentType)// 确定当前栏目
+      },
       /**
        * 网络请求相关的方法
        */
@@ -111,6 +119,8 @@
           // push(...nums)函数可以传入可变参数
           this.goods[type].list.push(...res.data.list);// 根据类型拿到list，把最新拿到的数据塞入对应list里面
           this.goods[type].page += 1;// 页码+1
+
+          this.$refs.scroll.finishPullUp()// 调用"完成加载更多"的方法
         })
       }
     }
