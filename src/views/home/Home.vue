@@ -1,13 +1,15 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper :banners="banners"/>
-    <recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <!--用 v-on 或 @ 语法糖，监听点击事件-->
-    <tab-control class="tab-control"
-                 :titles="['流行', '新款', '精选']" @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
+   <scroll class="content">
+     <home-swiper :banners="banners"/>
+     <recommend-view :recommends="recommends"/>
+     <feature-view/>
+     <!--用 v-on 或 @ 语法糖，监听点击事件-->
+     <tab-control class="tab-control"
+                  :titles="['流行', '新款', '精选']" @tabClick="tabClick"/>
+     <goods-list :goods="showGoods"/>
+   </scroll>
   </div>
 </template>
 
@@ -20,6 +22,7 @@
   import NavBar from 'components/common/navbar/NavBar';
   import TabControl from 'components/content/tabControl/TabControl';
   import GoodsList from 'components/content/goods/GoodsList';
+  import Scroll from 'components/common/scroll/Scroll';
 
   // 方法
   import {getHomeMultidata, getHomeGoods} from 'network/home';
@@ -32,7 +35,8 @@
       FeatureView,
       NavBar,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll
     },
     data() {
       return {
@@ -102,7 +106,8 @@
 
 <style scoped>
   #home {/*首页有id，所以用#*/
-    padding-top: 44px;/*给顶部一个内边距，轮播图就可以完整的显示出来*/
+    height: 100vh;/*100%视口*/
+    position: relative;/*相对定位*/
   }
   .home-nav {
     background-color: var(--color-tint);
@@ -119,5 +124,14 @@
     position: sticky;/*为tabControl添加吸顶效果，需要定义top属性*/
     top: 44px;/*达到top值前position属性为sticky，达到top值后自动改为fixed*/
     z-index: 9;/*防止图片遮挡住tabControl*/
+  }
+
+  .content {/*确定中间滚动区域的高度*/
+    overflow: hidden;
+    position: absolute;/*绝对定位*/
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 </style>
