@@ -1,31 +1,35 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-   <scroll class="content">
-     <home-swiper :banners="banners"/>
-     <recommend-view :recommends="recommends"/>
-     <feature-view/>
-     <!--用 v-on 或 @ 语法糖，监听点击事件-->
-     <tab-control class="tab-control"
-                  :titles="['流行', '新款', '精选']" @tabClick="tabClick"/>
-     <goods-list :goods="showGoods"/>
-   </scroll>
+    <!--传参时前面加上冒号则会将数字当做数值型传入，否则会被当做字符串-->
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <!--用 v-on 或 @ 语法糖，监听点击事件-->
+      <tab-control class="tab-control"
+                   :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
+    <!--在监听一个组件的原生事件时，必须给对应事件加上.native修饰符-->
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
 <script>
   // 子组件
-  import HomeSwiper from './childComps/HomeSwiper';
-  import RecommendView from './childComps/RecommendView';
-  import FeatureView from "./childComps/FeatureView";
+  import HomeSwiper from './childComps/HomeSwiper'
+  import RecommendView from './childComps/RecommendView'
+  import FeatureView from "./childComps/FeatureView"
   // 公共组件
-  import NavBar from 'components/common/navbar/NavBar';
-  import TabControl from 'components/content/tabControl/TabControl';
-  import GoodsList from 'components/content/goods/GoodsList';
-  import Scroll from 'components/common/scroll/Scroll';
-
+  import NavBar from 'components/common/navbar/NavBar'
+  import TabControl from 'components/content/tabControl/TabControl'
+  import GoodsList from 'components/content/goods/GoodsList'
+  import Scroll from 'components/common/scroll/Scroll'
+  import BackTop from 'components/content/backTop/BackTop'
   // 方法
-  import {getHomeMultidata, getHomeGoods} from 'network/home';
+  import {getHomeMultidata, getHomeGoods} from 'network/home'
 
   export default {
     name: "Home",
@@ -36,7 +40,8 @@
       NavBar,
       TabControl,
       GoodsList,
-      Scroll
+      Scroll,
+      BackTop
     },
     data() {
       return {
@@ -48,7 +53,8 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []}
         },
-        currentType: 'pop'// 默认当前类型（第一次展示的为pop）
+        currentType: 'pop',// 默认当前类型（第一次展示的为pop）
+        isShowBackTop: false// 默认为：不显示
       }
     },
     computed: {// 使用计算属性代替goods[currentType].list（注意加.this）
@@ -80,6 +86,13 @@
             this.currentType = 'sell'
             break
         }
+      },
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0, 500)// 通过ref拿到对象，可以访问其内部属性和方法
+      },
+      contentScroll(position) {// 内容发生滚动时，可以拿到position
+        // 将position的y值和1000作对比，当大于1000时显示BackTop图标
+        this.isShowBackTop = -position.y > 1000// y是一个负值，先转为正数
       },
       /**
        * 网络请求相关的方法
@@ -125,7 +138,7 @@
     top: 44px;/*达到top值前position属性为sticky，达到top值后自动改为fixed*/
     z-index: 9;/*防止图片遮挡住tabControl*/
   }
-
+  /*方法一：定位*/
   .content {/*确定中间滚动区域的高度*/
     overflow: hidden;
     position: absolute;/*绝对定位*/
@@ -134,4 +147,10 @@
     left: 0;
     right: 0;
   }
+  /*方法二：通过calc计算*/
+  /*.content {*/
+  /*  height: calc(100% - 93px);*/
+  /*  overflow: hidden;*/
+  /*  margin-top: 44px;*/
+  /*}*/
 </style>

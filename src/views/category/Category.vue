@@ -1,5 +1,9 @@
 <template>
   <div class="wrapper" ref="aaaa">
+    <!--1.无论是否设置click:false, button都可以点击-->
+    <button @click="btnClick">按钮</button>
+    <!--2.必须设置click:true, 那么div才能监听点击-->
+    <div @click="divClick">呵呵呵呵</div>
     <ul class="content">
       <li>分类列表1</li>
       <li>分类列表2</li>
