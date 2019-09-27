@@ -7,7 +7,7 @@
             :probe-type="3"
             @scroll="contentScroll"
             :pull-up-load="true"
-            @pullingUp="LoadMore">
+            @pullingUp="loadMore">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -35,6 +35,7 @@
   import BackTop from 'components/content/backTop/BackTop'
   // 方法
   import {getHomeMultidata, getHomeGoods} from 'network/home'
+  import {debounce} from 'common/utils'
 
   export default {
     name: "Home",
@@ -46,7 +47,7 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop
+      BackTop,
     },
     data() {
       return {
@@ -80,7 +81,7 @@
     mounted() {// 使用mounted来确保scroll有值之后再刷新
       // 3.监听item中图片加载完成的事件
       // 为避免refresh函数频繁调用，使用debounce防抖函数
-      const refresh = this.debounce(this.$refs.scroll.refresh, 500)// 延迟半秒刷新
+      const refresh = debounce(this.$refs.scroll.refresh, 500)// 延迟半秒刷新
       this.$bus.$on('itemImageLoad', () => {
         refresh()// 调用刷新方法，并将其放入防抖函数中
       })
@@ -89,16 +90,6 @@
       /**
        * 事件监听相关的方法
        */
-      // debounce(待执行函数, 等待时间)
-      debounce(func, delay) {
-        let timer = null// 计时器默认为null
-        return function(...args) {// 返回新函数，可传多个参数
-          if (timer) clearTimeout(timer)//如果计时器有值，则取消计时器
-          timer = setTimeout(() => {// 延迟执行
-            func.apply(this, args)// 如果没有取消计时器，则执行刷新函数
-          }, delay)
-        }
-      },
       tabClick(index) {
         switch (index) {
           case 0:
@@ -119,8 +110,8 @@
         // 将position的y值和1000作对比，当大于1000时显示BackTop图标
         this.isShowBackTop = -position.y > 1000// y是一个负值，先转为正数
       },
-      LoadMore() {
-        this.getHomeGoods(this.currentType)// 确定当前栏目
+      loadMore() {
+        this.getHomeGoods(this.currentType)// 确定当前选中的栏目(type)
       },
       /**
        * 网络请求相关的方法
@@ -136,7 +127,7 @@
       getHomeGoods(type) {
         const page = this.goods[type].page + 1;// 根据类型拿到最新的页码
         getHomeGoods(type, page).then(res => {// 请求最新的数据
-          // push(...nums)函数可以传入可变参数
+          // push(...nums)函数可以传入多个可变参数
           this.goods[type].list.push(...res.data.list);// 根据类型拿到list，把最新拿到的数据塞入对应list里面
           this.goods[type].page += 1;// 页码+1
 
@@ -168,8 +159,9 @@
     top: 44px;/*达到top值前position属性为sticky，达到top值后自动改为fixed*/
     z-index: 9;/*防止图片遮挡住tabControl*/
   }
+  /*确定中间滚动区域的高度*/
   /*方法一：定位*/
-  .content {/*确定中间滚动区域的高度*/
+  .content {
     overflow: hidden;
     position: absolute;/*绝对定位*/
     top: 44px;

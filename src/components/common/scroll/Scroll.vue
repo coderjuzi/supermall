@@ -37,14 +37,18 @@
         pullUpLoad: this.pullUpLoad
       })
       // 2. 监听滚动的位置
-      this.scroll.on('scroll', (position) => {
-        // console.log(position);
-        this.$emit('scroll', position)// 自定义'scroll'事件，将position传出去
-      })
-      // 3. 监听上拉事件
-      this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp')
-      })
+      if (this.probeType === 2 || this.probeType === 3){
+        this.scroll.on('scroll', (position) => {
+          // console.log(position);
+          this.$emit('scroll', position)// 自定义'scroll'事件，将position传出去
+        })
+      }
+      // 3. 监听scroll滚动到底部
+      if (this.pullUpLoad) {// 添加判断，在有pullUpLoad时才监听
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods: {// 添加"返回位置和所用时间"的方法
       scrollTo(x, y, time=300) {
@@ -52,10 +56,9 @@
         this.scroll && this.scroll.scrollTo(x, y, time)
       },
       finishPullUp() {// 添加"完成加载更多"的方法
-        this.scroll.finishPullUp()
+        this.scroll && this.scroll.finishPullUp()// 先判断scroll是否有值，若有则调用finishPullUp方法
       },
       refresh() {// 添加刷新的方法
-        console.log('---');
         this.scroll && this.scroll.refresh()
       }
     }
