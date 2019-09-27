@@ -48,13 +48,15 @@
     },
     methods: {// 添加"返回位置和所用时间"的方法
       scrollTo(x, y, time=300) {
-        this.scroll.scrollTo(x, y, time)
+        // 逻辑与：先判断scroll对象有没有值（是否为null）
+        this.scroll && this.scroll.scrollTo(x, y, time)
       },
       finishPullUp() {// 添加"完成加载更多"的方法
         this.scroll.finishPullUp()
       },
       refresh() {// 添加刷新的方法
-        this.scroll.refresh()
+        console.log('---');
+        this.scroll && this.scroll.refresh()
       }
     }
   }

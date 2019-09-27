@@ -24,7 +24,8 @@
     },
     methods: {
       imageLoad() {
-        this.$bus.$emit('itemImageLoad')// 事件总线，发射itemImageLoad事件（item中的图片被加载完了）
+        // 涉及到非父子组件的通信, 因此选择使用$bus（事件总线）
+        this.$bus.$emit('itemImageLoad')// 发射itemImageLoad事件（item中的图片被加载完了）
       }
     }
   }

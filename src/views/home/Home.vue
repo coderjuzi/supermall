@@ -74,16 +74,31 @@
       this.getHomeGoods('pop')// 接收类型
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
-
+    },
+    // created：在模板渲染成html前调用，即通常初始化某些属性值，然后再渲染成视图
+    // mounted：在模板渲染成html后调用，通常是初始化页面完成后，再对html的dom节点进行一些需要的操作
+    mounted() {// 使用mounted来确保scroll有值之后再刷新
       // 3.监听item中图片加载完成的事件
+      // 为避免refresh函数频繁调用，使用debounce防抖函数
+      const refresh = this.debounce(this.$refs.scroll.refresh, 500)// 延迟半秒刷新
       this.$bus.$on('itemImageLoad', () => {
-        this.$refs.scroll.refresh()// 调用refresh()刷新方法
+        refresh()// 调用刷新方法，并将其放入防抖函数中
       })
     },
     methods: {
       /**
        * 事件监听相关的方法
        */
+      // debounce(待执行函数, 等待时间)
+      debounce(func, delay) {
+        let timer = null// 计时器默认为null
+        return function(...args) {// 返回新函数，可传多个参数
+          if (timer) clearTimeout(timer)//如果计时器有值，则取消计时器
+          timer = setTimeout(() => {// 延迟执行
+            func.apply(this, args)// 如果没有取消计时器，则执行刷新函数
+          }, delay)
+        }
+      },
       tabClick(index) {
         switch (index) {
           case 0:
