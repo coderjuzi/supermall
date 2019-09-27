@@ -74,6 +74,11 @@
       this.getHomeGoods('pop')// 接收类型
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
+
+      // 3.监听item中图片加载完成的事件
+      this.$bus.$on('itemImageLoad', () => {
+        this.$refs.scroll.refresh()// 调用refresh()刷新方法
+      })
     },
     methods: {
       /**

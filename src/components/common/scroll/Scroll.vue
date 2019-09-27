@@ -52,6 +52,9 @@
       },
       finishPullUp() {// 添加"完成加载更多"的方法
         this.scroll.finishPullUp()
+      },
+      refresh() {// 添加刷新的方法
+        this.scroll.refresh()
       }
     }
   }

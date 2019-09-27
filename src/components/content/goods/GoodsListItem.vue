@@ -1,6 +1,8 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
+    <!--原生JS监听图片: img.onload = function() {}-->
+    <!--Vue使用@load监听每一张图片加载完成，执行imageLoad方法-->
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -18,6 +20,11 @@
         default() {
           return {}
         }
+      }
+    },
+    methods: {
+      imageLoad() {
+        this.$bus.$emit('itemImageLoad')// 事件总线，发射itemImageLoad事件（item中的图片被加载完了）
       }
     }
   }
