@@ -78,7 +78,7 @@
         return this.goods[this.currentType].list
       }
     },
-    destroyed() {
+    destroyed() {// 离开页面后，该页面自动销毁
       console.log('home destroyed');
     },
     activated() {// Home活跃时（在Home中）

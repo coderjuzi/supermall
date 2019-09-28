@@ -1,5 +1,6 @@
 <template>
-  <div class="goods-item">
+  <!--监听GoodsListItem的点击-->
+  <div class="goods-item" @click="itemClick">
     <!--原生JS监听图片: img.onload = function() {}-->
     <!--Vue使用@load监听每一张图片加载完成，执行imageLoad方法-->
     <img :src="goodsItem.show.img" alt="" @load="imageLoad">
@@ -26,6 +27,10 @@
       imageLoad() {
         // 涉及到非父子组件的通信, 因此选择使用$bus（事件总线）
         this.$bus.$emit('itemImageLoad')// 发射itemImageLoad事件（item中的图片被加载完了）
+      },
+      itemClick() {
+        // 使用push进行详情页的路由跳转
+        this.$router.push('/detail/' + this.goodsItem.iid)// 拼接商品的iid
       }
     }
   }
