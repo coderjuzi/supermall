@@ -34,11 +34,10 @@ export class Shop {
     this.goodsCount = shopInfo.cGoods
   }
 }
-
-// 整合
+// 整合商品参数
 export class GoodsParam {
   constructor(info, rule) {
-    // 注: images可能没有值(某些商品有值, 某些没有值)
+    // 注: images可能没有值， 因此做判断，如果没有值就赋值为空
     this.image = info.images ? info.images[0] : '';
     this.infos = info.set;
     this.sizes = rule.tables;

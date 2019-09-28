@@ -10,6 +10,8 @@
       <detail-shop-info :shop="shop"/>
       <!--监听商品详情图片的加载，调用imageLoad-->
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
+      <!--传入paramInfo属性-->
+      <detail-param-info :param-info="paramInfo"/>
     </scroll>
   </div>
 </template>
@@ -20,10 +22,11 @@
   import DetailBaseInfo from './childComps/DetailBaseInfo'
   import DetailShopInfo from './childComps/DetailShopInfo'
   import DetailGoodsInfo from './childComps/DetailGoodsInfo'
+  import DetailParamInfo from './childComps/DetailParamInfo'
 
   import Scroll from 'components/common/scroll/Scroll'
 
-  import {getDetail, Goods, Shop} from 'network/detail'
+  import {getDetail, Goods, Shop, GoodsParam} from 'network/detail'
 
   export default {
     name: "Detail",
@@ -33,6 +36,7 @@
       DetailBaseInfo,
       DetailShopInfo,
       DetailGoodsInfo,
+      DetailParamInfo,
       Scroll
     },
     data() {// 保存iid
@@ -41,7 +45,8 @@
         topImages: [],
         goods: {}, // 设goods默认为空对象
         shop: {},
-        detailInfo: {}// 变量对应的是对象
+        detailInfo: {},// 变量对应的是对象
+        paramInfo: {}
       }
     },
     created() {
@@ -59,6 +64,8 @@
         this.shop = new Shop(data.shopInfo)
         // d. 保存商品详情数据
         this.detailInfo = data.detailInfo
+        // e. 获取参数信息
+        this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
       })
     },
     methods: {
@@ -70,18 +77,18 @@
 </script>
 
 <style scoped>
-  #detail {/*调整层级关系，使得详情页能够覆盖tabBar*/
-    position: relative;/*相对定位可以保证原来的位置，并可以设置z-index*/
+  #detail { /*调整层级关系，使得详情页能够覆盖tabBar*/
+    position: relative; /*相对定位可以保证原来的位置，并可以设置z-index*/
     z-index: 9;
-    background-color: #fff;/*调整背景颜色，使其完全覆盖tabBar*/
-    height: 100vh;/*100vh：100%相对于视口的高度*/
+    background-color: #fff; /*调整背景颜色，使其完全覆盖tabBar*/
+    height: 100vh; /*100vh：100%相对于视口的高度*/
   }
 
-  .content {/*设置滚动区域的固定高度*/
-    height: calc(100% - 44px);/*100%是相对于父元素设置的，父元素必须要设置高度*/
+  .content { /*设置滚动区域的固定高度*/
+    height: calc(100% - 44px); /*100%是相对于父元素设置的，父元素必须要设置高度*/
   }
 
-  .detail-nav{/*调整层级关系，使得导航栏能够覆盖详情页内容*/
+  .detail-nav { /*调整层级关系，使得导航栏能够覆盖详情页内容*/
     position: relative;
     z-index: 9;
     background-color: #fff;
