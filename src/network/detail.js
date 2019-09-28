@@ -35,7 +35,7 @@ export class Shop {
   }
 }
 
-
+// 整合
 export class GoodsParam {
   constructor(info, rule) {
     // 注: images可能没有值(某些商品有值, 某些没有值)

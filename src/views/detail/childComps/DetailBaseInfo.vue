@@ -26,17 +26,17 @@
 </template>
 
 <script>
-	export default {
-		name: "DetailBaseInfo",
+  export default {
+    name: "DetailBaseInfo",
     props: {
-		  goods: {
-		    type: Object,
+      goods: {
+        type: Object,
         default() {
-		      return {}// 默认值为空
+          return {}// 默认值为空
         }
       }
     }
-	}
+  }
 </script>
 
 <style scoped>
@@ -84,7 +84,7 @@
     line-height: 30px;
     display: flex;
     font-size: 13px;
-    border-bottom: 1px solid rgba(100,100,100,.1);
+    border-bottom: 1px solid rgba(100, 100, 100, .1);
     justify-content: space-between;
   }
 
