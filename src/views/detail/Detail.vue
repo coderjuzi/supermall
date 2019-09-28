@@ -1,11 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar/>
-    <!--传入topImages动态展示轮播图-->
-    <detail-swiper :top-images="topImages"/>
-    <!--传入goods以展示-->
-    <detail-base-info :goods="goods"/>
-    <detail-shop-info :shop="shop"/>
+    <detail-nav-bar class="detail-nav"/>
+    <!--使用封装好的Scroll包裹详情页需要滚动的部分，必须设置固定高度-->
+    <scroll class="content">
+      <!--传入topImages动态展示轮播图-->
+      <detail-swiper :top-images="topImages"/>
+      <!--传入goods以展示-->
+      <detail-base-info :goods="goods"/>
+      <detail-shop-info :shop="shop"/>
+    </scroll>
   </div>
 </template>
 
@@ -15,6 +18,8 @@
   import DetailBaseInfo from './childComps/DetailBaseInfo'
   import DetailShopInfo from './childComps/DetailShopInfo'
 
+  import Scroll from 'components/common/scroll/Scroll'
+
   import {getDetail, Goods, Shop} from 'network/detail'
 
   export default {
@@ -23,7 +28,8 @@
       DetailNavBar,
       DetailSwiper,
       DetailBaseInfo,
-      DetailShopInfo
+      DetailShopInfo,
+      Scroll
     },
     data() {// 保存iid
       return {
@@ -52,5 +58,20 @@
 </script>
 
 <style scoped>
+  #detail {/*调整层级关系，使得详情页能够覆盖tabBar*/
+    position: relative;/*相对定位可以保证原来的位置，并可以设置z-index*/
+    z-index: 9;
+    background-color: #fff;/*调整背景颜色，使其完全覆盖tabBar*/
+    height: 100vh;/*100vh：100%相对于视口的高度*/
+  }
 
+  .content {/*设置滚动区域的固定高度*/
+    height: calc(100% - 44px);/*100%是相对于父元素设置的，父元素必须要设置高度*/
+  }
+
+  .detail-nav{/*调整层级关系，使得导航栏能够覆盖详情页内容*/
+    position: relative;
+    z-index: 9;
+    background-color: #fff;
+  }
 </style>
