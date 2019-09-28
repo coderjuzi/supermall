@@ -67,15 +67,26 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',// 默认当前类型（第一次展示的为pop）
-        isShowBackTop: false,// 默认为：不显示
+        isShowBackTop: false,// 默认：不显示
         tabOffsetTop: 0,// offsetTop：当前对象到其上级层顶部的距离
-        isTabFixed: false// 默认：不吸顶
+        isTabFixed: false,// 默认：不吸顶
+        saveY: 0// 当前位置，默认：0
       }
     },
     computed: {// 使用计算属性代替goods[currentType].list（注意加.this）
       showGoods() {
         return this.goods[this.currentType].list
       }
+    },
+    destroyed() {
+      console.log('home destroyed');
+    },
+    activated() {// Home活跃时（在Home中）
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)// 迅速回到saveY位置
+      this.$refs.scroll.refresh()// 滚动回到saveY位置后，进行一次刷新
+    },
+    deactivated() {// 离开Home时（进入其他页面中）
+      this.saveY = this.$refs.scroll.getScrollY()// 拿到并保存当前位置为saveY
     },
     created() {// 使用生命周期函数，发送网络请求
       // 1. 请求多个数据

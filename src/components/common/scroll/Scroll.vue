@@ -60,6 +60,10 @@
       },
       refresh() {// 添加刷新的方法
         this.scroll && this.scroll.refresh()
+      },
+      getScrollY() {// 添加拿到saveY值的方法
+        // 判断scroll是否有值，若有则通过.y取出该值，若无则返回0
+        return this.scroll ? this.scroll.y : 0
       }
     }
   }

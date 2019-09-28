@@ -1,6 +1,9 @@
 <template>
-  <div id="app">
-    <router-view/>
+  <div id="app" class="label-wrapper">
+    <!--使用keep-alive让Home不会随意销毁-->
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
     <main-tab-bar/>
   </div>
 </template>
