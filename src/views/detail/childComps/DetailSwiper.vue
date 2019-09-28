@@ -1,5 +1,5 @@
 <template>
-  <swiper class="detail-swiper">
+  <swiper class="detail-swiper" :style="">
     <!--v-for遍历展示topImages中的item-->
     <swiper-item v-for="item in topImages">
       <img :src="item" alt="">

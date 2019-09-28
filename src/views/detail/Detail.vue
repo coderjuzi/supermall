@@ -3,25 +3,30 @@
     <detail-nav-bar/>
     <!--传入topImages动态展示轮播图-->
     <detail-swiper :top-images="topImages"/>
+    <!--传入goods以展示-->
+    <detail-base-info :goods="goods"/>
   </div>
 </template>
 
 <script>
   import DetailNavBar from './childComps/DetailNavBar'
   import DetailSwiper from './childComps/DetailSwiper'
+  import DetailBaseInfo from './childComps/DetailBaseInfo'
 
-  import {getDetail} from 'network/detail'
+  import {getDetail, Goods} from 'network/detail'
 
   export default {
     name: "Detail",
     components: {
       DetailNavBar,
-      DetailSwiper
+      DetailSwiper,
+      DetailBaseInfo
     },
     data() {// 保存iid
       return {
         iid: null,// 设iid默认为null
-        topImages: []
+        topImages: [],
+        goods: null
       }
     },
     created() {
@@ -31,7 +36,10 @@
       getDetail(this.iid).then(res => {// 调用getDetail方法
         // a. 获取顶部的轮播图数据
         console.log(res);
-        this.topImages = res.result.itemInfo.topImages
+        const data = res.result;// 定义data作为中转，方便下面使用
+        this.topImages = data.itemInfo.topImages
+        // b. 获取商品信息
+        this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
       })
     }
   }
