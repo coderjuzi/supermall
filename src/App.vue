@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="label-wrapper">
-    <!--使用keep-alive让Home不会随意销毁-->
-    <keep-alive>
+  <div id="app" class="wrapper">
+    <!--使用keep-alive让Home不会随意销毁，将Detail排除在外，因为每次都需要更新-->
+    <keep-alive exclude="Detail">
       <router-view/>
     </keep-alive>
     <main-tab-bar/>

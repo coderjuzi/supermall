@@ -132,7 +132,7 @@
       // 1. 判断BackTop是否显示
       contentScroll(position) {// 内容发生滚动时，可以拿到position
         // 将position的y值和1000作对比，当大于1000时显示BackTop图标
-        this.isShowBackTop = -(position.y) > 1000// y是一个负值，先转为正数
+        this.isShowBackTop = (-position.y) > 1000// y是一个负值，先转为正数
         // 2. 决定tabControl是否吸顶
         this.isTabFixed = (-position.y) > this.tabOffsetTop// 大于则吸顶
       },
@@ -143,7 +143,7 @@
         // 获取tabControl的offsetTop
         // 组件没有offsetTop属性，因此要拿到组件中的元素
         // 所有的组件都有一个属性$el：用于获取组件中的元素
-        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
       },
       /**
        * 网络请求相关的方法
