@@ -3,7 +3,7 @@
   <div class="goods-item" @click="itemClick">
     <!--原生JS监听图片: img.onload = function() {}-->
     <!--Vue使用@load监听每一张图片加载完成，执行imageLoad方法-->
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+    <img :src="showImage" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -23,6 +23,12 @@
         }
       }
     },
+    computed: {// 添加展示图片的计算方法
+      showImage() {
+        // 使用逻辑或，如果前面取不到图片（为空），则使用后面的
+        return this.goodsItem.image || this.goodsItem.show.img
+      }
+    },
     methods: {
       imageLoad() {
         // 涉及到非父子组件的通信, 因此选择使用$bus（事件总线）
@@ -39,19 +45,19 @@
 <style scoped>
   .goods-item {
     padding-bottom: 40px;
-    position: relative;/*相对定位，子绝父相*/
+    position: relative; /*相对定位，子绝父相*/
 
-    width: 48%;/*让每行显示两张图片*/
+    width: 48%; /*让每行显示两张图片*/
   }
 
   .goods-item img {
     width: 100%;
-    border-radius: 5px;/*圆角图片*/
+    border-radius: 5px; /*圆角图片*/
   }
 
   .goods-info {
     font-size: 12px;
-    position: absolute;/*绝对定位，商品信息定位在图片下面*/
+    position: absolute; /*绝对定位，商品信息定位在图片下面*/
     bottom: 5px;
     left: 0;
     right: 0;
@@ -60,9 +66,9 @@
   }
 
   .goods-info p {
-    overflow: hidden;/*溢出隐藏*/
-    text-overflow: ellipsis;/*文本溢出时显示省略标记（...）*/
-    white-space: nowrap;/*规定文字不进行换行*/
+    overflow: hidden; /*溢出隐藏*/
+    text-overflow: ellipsis; /*文本溢出时显示省略标记（...）*/
+    white-space: nowrap; /*规定文字不进行换行*/
     margin-bottom: 3px;
   }
 
@@ -75,7 +81,7 @@
     position: relative;
   }
 
-  .goods-info .collect::before {/*伪元素*/
+  .goods-info .collect::before { /*伪元素*/
     content: '';
     position: absolute;
     left: -15px;

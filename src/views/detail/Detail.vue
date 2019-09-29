@@ -12,6 +12,8 @@
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
       <!--传入paramInfo属性-->
       <detail-param-info :param-info="paramInfo"/>
+      <detail-comment-info :comment-info="commentInfo"/>
+      <goods-list :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -23,10 +25,12 @@
   import DetailShopInfo from './childComps/DetailShopInfo'
   import DetailGoodsInfo from './childComps/DetailGoodsInfo'
   import DetailParamInfo from './childComps/DetailParamInfo'
+  import DetailCommentInfo from './childComps/DetailCommentInfo'
 
   import Scroll from 'components/common/scroll/Scroll'
+  import GoodsList from 'components/content/goods/GoodsList'
 
-  import {getDetail, Goods, Shop, GoodsParam} from 'network/detail'
+  import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
 
   export default {
     name: "Detail",
@@ -37,7 +41,9 @@
       DetailShopInfo,
       DetailGoodsInfo,
       DetailParamInfo,
-      Scroll
+      DetailCommentInfo,
+      Scroll,
+      GoodsList
     },
     data() {// 保存iid
       return {
@@ -46,7 +52,9 @@
         goods: {}, // 设goods默认为空对象
         shop: {},
         detailInfo: {},// 变量对应的是对象
-        paramInfo: {}
+        paramInfo: {},
+        commentInfo: {},
+        recommends: []
       }
     },
     created() {
@@ -54,18 +62,26 @@
       this.iid = this.$route.params.iid
       // 2. 根据iid请求详情数据（抽离数据）
       getDetail(this.iid).then(res => {// 调用getDetail方法
-        // a. 获取顶部的轮播图数据
         console.log(res);
+        // 2.1 获取顶部的轮播图数据
         const data = res.result;// 定义data作为中转，方便下面使用
         this.topImages = data.itemInfo.topImages
-        // b. 获取商品信息
+        // 2.2 获取商品信息
         this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
-        // c. 创建店铺信息的对象
+        // 2.3 获取店铺信息
         this.shop = new Shop(data.shopInfo)
-        // d. 保存商品详情数据
+        // 2.4 获取商品详情数据
         this.detailInfo = data.detailInfo
-        // e. 获取参数信息
+        // 2.5 获取参数信息
         this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+        // 2.6 获取评论信息
+        if(data.rate.cRate !== 0) {// 做判断，如果有评论信息
+          this.commentInfo = data.rate.list[0]// 取出一条评论
+        }
+      })
+      // 3. 请求推荐数据
+      getRecommend().then(res => {
+        this.recommends = res.data.list
       })
     },
     methods: {

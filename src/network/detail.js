@@ -43,3 +43,10 @@ export class GoodsParam {
     this.sizes = rule.tables;
   }
 }
+
+// 整合商品推荐信息
+export function getRecommend() {
+  return request({
+    url: '/recommend'
+  })
+}
