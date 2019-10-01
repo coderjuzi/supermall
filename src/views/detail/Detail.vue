@@ -1,8 +1,12 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" @titleClick="titleClick"/>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav"/>
     <!--使用封装好的Scroll包裹详情页需要滚动的部分，必须设置固定高度-->
-    <scroll class="content" ref="scroll">
+    <!--probe-type的默认值在Scroll中是0，这里需要 传入3才能对position进行监听-->
+    <scroll class="content"
+            ref="scroll"
+            :probe-type="3"
+            @scroll="contentScroll">
       <!--传入topImages动态展示轮播图-->
       <detail-swiper :top-images="topImages"/>
       <!--传入goods以展示-->
@@ -57,7 +61,8 @@
         commentInfo: {},
         recommends: [],
         themeTopYs: [],// 导航栏中4个对象对应的高度
-        getThemeTopY: null
+        getThemeTopY: null,
+        currentIndex: 0
       }
     },
     created() {
@@ -89,16 +94,16 @@
       // 4. 给getThemeTopY赋值（对给this.themeTopYs赋值的操作进行防抖）
       this.getThemeTopY = debounce(() => {// 多次被使用，因此生成防抖函数
         // 拿到对应的4个相对顶部的高度offsetTop
-        // 图片加载完成后，获得最新的数据，对应的DOM是已经被渲染出来
+        // 图片加载完成后，获得最新的高度数据，对应的DOM是已经被渲染出来
         this.themeTopYs = []
         this.themeTopYs.push(0)
         this.themeTopYs.push(this.$refs.param.$el.offsetTop)// 组件需要用$el去拿offsetTop
         this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
         this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+        this.themeTopYs.push(Number.MAX_VALUE)// 追加一个非常大的值
 
         console.log(this.themeTopYs);
       }, 100)// 设置delay
-
     },
     mounted() {
       // 监听详情页图片的加载
@@ -118,6 +123,25 @@
       },
       titleClick(index) {
         this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 200)// Y为负值
+      },
+      contentScroll(position) {
+        // 1. 获取y值
+        const positionY = -position.y// 给y值取反
+        // 2. ppsitionY和主题中的值进行对比
+        // 例如：[0, 13797, 15069, 15285, Number.MAX_VALUE]
+        // positionY 在 0 和 13797 之间，index = 0
+        // positionY 在 13797 和 15069 之间，index = 1
+        // positionY 在 15069 和 15285 之间，index = 2
+        // positionY 在 15285 和 非常大的值 之间，index = 3
+        let length = this.themeTopYs.length
+        // 遍历数组（最后一层不需要遍历）
+        for(let i = 0; i < length-1; i++) {// i=0，使得i为number类型
+          // 防止赋值过于频繁 this.currentIndex !== i
+          if (this.currentIndex !== i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1])) {
+              this.currentIndex = i;
+              this.$refs.nav.currentIndex = this.currentIndex;
+          }
+        }
       }
     }
   }
