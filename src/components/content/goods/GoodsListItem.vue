@@ -31,8 +31,13 @@
     },
     methods: {
       imageLoad() {
-        // 涉及到非父子组件的通信, 因此选择使用$bus（事件总线）
-        this.$bus.$emit('itemImageLoad')// 发射itemImageLoad事件（item中的图片被加载完了）
+        // 根据路由进行判断，使得home页和detail页分别监听自己的全局事件，不会发生冲突
+        if (this.$route.path.indexOf('/home')) {// 如果在home页中才发送事件
+          // 涉及到非父子组件的通信, 因此选择使用$bus（事件总线）
+          this.$bus.$emit('itemImageLoad')// 发射itemImageLoad事件（item中的图片被加载完了）
+        } else if (this.$route.path.indexOf('/detail')) {// 如果在详情页中才发送事件
+          this.$bus.$emit('itemImageLoad')
+        }
       },
       itemClick() {
         // 使用push进行详情页的路由跳转

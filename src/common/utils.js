@@ -1,5 +1,5 @@
 // 防抖函数debounce(待执行函数, 等待时间)
-export function debounce(func, delay) {
+export function debounce(func, delay=50) {// 设置delay的默认值
   let timer = null// 计时器默认为null
   return function (...args) {// 返回新函数，可传多个参数
     if (timer) clearTimeout(timer)//如果计时器有值，则取消计时器

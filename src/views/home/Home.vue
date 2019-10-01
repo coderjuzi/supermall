@@ -70,7 +70,8 @@
         isShowBackTop: false,// 默认：不显示
         tabOffsetTop: 0,// offsetTop：当前对象到其上级层顶部的距离
         isTabFixed: false,// 默认：不吸顶
-        saveY: 0// 当前位置，默认：0
+        saveY: 0,// 当前位置，默认：0
+        itemImgListener: null// 首页监听，默认为空
       }
     },
     computed: {// 使用计算属性代替goods[currentType].list（注意加.this）
@@ -86,7 +87,10 @@
       this.$refs.scroll.refresh()// 滚动回到saveY位置后，进行一次刷新
     },
     deactivated() {// 离开Home时（进入其他页面中）
+      // 1. 保存Y值
       this.saveY = this.$refs.scroll.getScrollY()// 拿到并保存当前位置为saveY
+      // 2. 取消全局事件的监听
+      this.$bus.$off('itemImageLoad', this.itemImgListener)
     },
     created() {// 使用生命周期函数，发送网络请求
       // 1. 请求多个数据
@@ -102,9 +106,11 @@
       // 1. item中图片加载完成的事件监听
       // 为避免refresh函数频繁调用，使用debounce防抖函数
       const refresh = debounce(this.$refs.scroll.refresh, 500)// 延迟半秒刷新
-      this.$bus.$on('itemImageLoad', () => {
+      // 2. 对监听的事件进行保存
+      this.itemImgListener = () => {
         refresh()// 调用刷新方法，并将其放入防抖函数中
-      })
+      }
+      this.$bus.$on('itemImageLoad', this.itemImgListener)// 导入itemImgListener
     },
     methods: {
       /**

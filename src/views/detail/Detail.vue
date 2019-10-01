@@ -1,6 +1,6 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"/>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick"/>
     <!--使用封装好的Scroll包裹详情页需要滚动的部分，必须设置固定高度-->
     <scroll class="content" ref="scroll">
       <!--传入topImages动态展示轮播图-->
@@ -11,9 +11,9 @@
       <!--监听商品详情图片的加载，调用imageLoad-->
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
       <!--传入paramInfo属性-->
-      <detail-param-info :param-info="paramInfo"/>
-      <detail-comment-info :comment-info="commentInfo"/>
-      <goods-list :goods="recommends"/>
+      <detail-param-info ref="param" :param-info="paramInfo"/>
+      <detail-comment-info ref="comment" :comment-info="commentInfo"/>
+      <goods-list ref="recommend" :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -31,6 +31,7 @@
   import GoodsList from 'components/content/goods/GoodsList'
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
+  import {debounce} from 'common/utils'
 
   export default {
     name: "Detail",
@@ -54,7 +55,9 @@
         detailInfo: {},// 变量对应的是对象
         paramInfo: {},
         commentInfo: {},
-        recommends: []
+        recommends: [],
+        themeTopYs: [],// 导航栏中4个对象对应的高度
+        getThemeTopY: null
       }
     },
     created() {
@@ -83,10 +86,38 @@
       getRecommend().then(res => {
         this.recommends = res.data.list
       })
+      // 4. 给getThemeTopY赋值（对给this.themeTopYs赋值的操作进行防抖）
+      this.getThemeTopY = debounce(() => {// 多次被使用，因此生成防抖函数
+        // 拿到对应的4个相对顶部的高度offsetTop
+        // 图片加载完成后，获得最新的数据，对应的DOM是已经被渲染出来
+        this.themeTopYs = []
+        this.themeTopYs.push(0)
+        this.themeTopYs.push(this.$refs.param.$el.offsetTop)// 组件需要用$el去拿offsetTop
+        this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+
+        console.log(this.themeTopYs);
+      }, 100)// 设置delay
+
+    },
+    mounted() {
+      // 监听详情页图片的加载
+      const refresh = debounce(this.$refs.scroll.refresh, 500)// 延迟半秒刷新
+      this.itemImgListener = () => {
+        refresh()
+      }
+      this.$bus.$on('itemImageLoad', this.itemImgListener)
+    },
+    destroyed() {// 使用$off取消itemImgListener
+      this.$bus.$off('itemImageLoad', this.itemImgListener)
     },
     methods: {
       imageLoad() {// 图片加载完后进行刷新，避免出现因高度问题而无法滚动
         this.$refs.scroll.refresh()
+        this.getThemeTopY()// 调用防抖函数
+      },
+      titleClick(index) {
+        this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 200)// Y为负值
       }
     }
   }
@@ -100,8 +131,13 @@
     height: 100vh; /*100vh：100%相对于视口的高度*/
   }
 
-  .content { /*设置滚动区域的固定高度*/
-    height: calc(100% - 44px); /*100%是相对于父元素设置的，父元素必须要设置高度*/
+  /*.content { !*设置滚动区域的固定高度*!*/
+  /*  height: calc(100% - 44px); !*100%是相对于父元素设置的，父元素必须要设置高度*!*/
+  /*}*/
+  .content {
+    position: absolute;
+    top: 44px;
+    bottom: 60px;
   }
 
   .detail-nav { /*调整层级关系，使得导航栏能够覆盖详情页内容*/

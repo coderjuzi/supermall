@@ -35,7 +35,8 @@
     },
     methods: {
       titleClick(index) {// titles的点击，传入index参数
-        this.currentIndex = index
+        this.currentIndex = index;
+        this.$emit('titleClick', index);
       },
       backClick() {// 返回按钮的点击，
         this.$router.back()// 使用back()或go(-1)通过路由器进行返回
