@@ -19,6 +19,7 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"/>
       <goods-list ref="recommend" :goods="recommends"/>
     </scroll>
+    <detail-bottom-bar/>
   </div>
 </template>
 
@@ -30,6 +31,7 @@
   import DetailGoodsInfo from './childComps/DetailGoodsInfo'
   import DetailParamInfo from './childComps/DetailParamInfo'
   import DetailCommentInfo from './childComps/DetailCommentInfo'
+  import DetailBottomBar from './childComps/DetailBottomBar'
 
   import Scroll from 'components/common/scroll/Scroll'
   import GoodsList from 'components/content/goods/GoodsList'
@@ -47,6 +49,7 @@
       DetailGoodsInfo,
       DetailParamInfo,
       DetailCommentInfo,
+      DetailBottomBar,
       Scroll,
       GoodsList
     },
@@ -155,18 +158,18 @@
     height: 100vh; /*100vh：100%相对于视口的高度*/
   }
 
-  /*.content { !*设置滚动区域的固定高度*!*/
-  /*  height: calc(100% - 44px); !*100%是相对于父元素设置的，父元素必须要设置高度*!*/
-  /*}*/
-  .content {
-    position: absolute;
-    top: 44px;
-    bottom: 60px;
+  .content { /*设置滚动区域的固定高度*/
+    height: calc(100% - 44px - 49px); /*100%是相对于父元素设置的，父元素必须要设置高度*/
   }
+  /*.content {*/
+  /*  position: absolute;*/
+  /*  top: 44px;*/
+  /*  bottom: 60px;*/
+  /*}*/
 
   .detail-nav { /*调整层级关系，使得导航栏能够覆盖详情页内容*/
     position: relative;
-    z-index: 9;
+    z-index: 1;
     background-color: #fff;
   }
 </style>
