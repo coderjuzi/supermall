@@ -7,6 +7,11 @@
             ref="scroll"
             :probe-type="3"
             @scroll="contentScroll">
+      <ul>
+        <li v-for="item in $store.state.cartList">
+          {{item}}
+        </li>
+      </ul>
       <!--传入topImages动态展示轮播图-->
       <detail-swiper :top-images="topImages"/>
       <!--传入goods以展示-->
@@ -19,7 +24,9 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"/>
       <goods-list ref="recommend" :goods="recommends"/>
     </scroll>
-    <detail-bottom-bar/>
+    <!--@是v-on的语法糖-->
+    <detail-bottom-bar @addToCart="addToCart"/>
+    <back-top @click.native="backTop" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -38,6 +45,7 @@
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
   import {debounce} from 'common/utils'
+  import {backTopMixin} from 'common/mixins'
 
   export default {
     name: "Detail",
@@ -53,6 +61,7 @@
       Scroll,
       GoodsList
     },
+    mixins: [backTopMixin],
     data() {// 保存iid
       return {
         iid: null,// 设iid默认为null
@@ -145,6 +154,23 @@
               this.$refs.nav.currentIndex = this.currentIndex;
           }
         }
+        // 3. 是否显示回到顶部按钮
+        // 生命周期mounted和created里的函数可以抽取到混入中
+        // methods里的函数不能单独抽取到混入中，只能利用另外一个函数间接抽取
+        this.listenShowBackTop(position)// 调用mixin的回到顶部
+      },
+      addToCart() {
+        // 1. 获取购物车需要展示的商品信息
+        const product = {}
+        product.image = this.topImages[0];
+        product.title = this.goods.title;
+        product.decs = this.goods.desc;
+        product.price = this.goods.realPrice;
+        product.iid = this.iid;
+
+        // 2. 将商品添加到购物车里
+        // this.$store.cartList.push(product)
+        this.$store.commit('addCart', product)
       }
     }
   }

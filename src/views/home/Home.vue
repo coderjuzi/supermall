@@ -25,7 +25,7 @@
       <goods-list :goods="showGoods"/>
     </scroll>
     <!--在监听一个组件的原生事件时，必须给对应事件加上.native修饰符-->
-    <back-top @click.native="backClick" v-show="isShowBackTop"/>
+    <back-top @click.native="backTop" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -39,10 +39,11 @@
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
-  import BackTop from 'components/content/backTop/BackTop'
   // 方法
   import {getHomeMultidata, getHomeGoods} from 'network/home'
   import {debounce} from 'common/utils'
+  import {BACKTOP_DISTANCE} from 'common/const'
+  import {backTopMixin} from 'common/mixins'
 
   export default {
     name: "Home",
@@ -53,9 +54,9 @@
       NavBar,
       TabControl,
       GoodsList,
-      Scroll,
-      BackTop,
+      Scroll
     },
+    mixins: [backTopMixin],
     data() {
       return {
         // 组件中创建变量banners保存res，不会被内存回收
@@ -67,7 +68,6 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',// 默认当前类型（第一次展示的为pop）
-        isShowBackTop: false,// 默认：不显示
         tabOffsetTop: 0,// offsetTop：当前对象到其上级层顶部的距离
         isTabFixed: false,// 默认：不吸顶
         saveY: 0,// 当前位置，默认：0
@@ -132,13 +132,9 @@
         this.$refs.tabControl1.currentIndex = index;
         this.$refs.tabControl2.currentIndex = index;
       },
-      backClick() {
-        this.$refs.scroll.scrollTo(0, 0, 500)// 通过ref拿到对象，可以访问其内部属性和方法
-      },
       // 1. 判断BackTop是否显示
       contentScroll(position) {// 内容发生滚动时，可以拿到position
-        // 将position的y值和1000作对比，当大于1000时显示BackTop图标
-        this.isShowBackTop = (-position.y) > 1000// y是一个负值，先转为正数
+        this.listenShowBackTop(position)// 调用mixin的回到顶部
         // 2. 决定tabControl是否吸顶
         this.isTabFixed = (-position.y) > this.tabOffsetTop// 大于则吸顶
       },

@@ -25,8 +25,8 @@
   export default {
     name: "DetailBottomBar",
     methods: {
-      addToCart() {
-        this.$emit('addToCart')
+      addToCart() {// 添加至购物车方法
+        this.$emit('addToCart')// 发送事件
       }
     }
   }
@@ -87,7 +87,7 @@
   .bar-right {
     font-size: 15px;
     color: #fff;
-    line-height: 58px;
+    line-height: 49px;
   }
 
   .bar-right .cart {

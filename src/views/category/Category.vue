@@ -106,11 +106,13 @@
       <li>分类列表99</li>
       <li>分类列表100</li>
     </ul>
+    <back-top @click.native="backTop" v-show="isShowBackTop"/>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll';
+  import {backTopMixin} from 'common/mixins'
 
   export default {
     name: 'Category',
@@ -119,6 +121,7 @@
         scroll: null
       }
     },
+    mixins: [backTopMixin],
     mounted() {// 钩子函数：在所有函数执行前，先执行了的函数
       // document.querySelector('.wrapper')：获取文档中 class="wrapper" 的元素
       this.scroll = new BScroll(document.querySelector('.wrapper'), {
@@ -137,7 +140,7 @@
 
 <style scoped>
   .wrapper {
-    height: 150px;
+    height: 100%;
     background-color: red;
 
     overflow: hidden;
