@@ -7,11 +7,6 @@
             ref="scroll"
             :probe-type="3"
             @scroll="contentScroll">
-      <ul>
-        <li v-for="item in $store.state.cartList">
-          {{item}}
-        </li>
-      </ul>
       <!--传入topImages动态展示轮播图-->
       <detail-swiper :top-images="topImages"/>
       <!--传入goods以展示-->
