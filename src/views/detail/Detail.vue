@@ -170,7 +170,8 @@
 
         // 2. 将商品添加到购物车里
         // this.$store.cartList.push(product)
-        this.$store.commit('addCart', product)
+        // this.$store.commit('addCart', product)
+        this.$store.dispatch('addCart', product)// actions需要用dispatch调用
       }
     }
   }
