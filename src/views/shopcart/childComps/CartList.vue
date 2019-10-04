@@ -32,7 +32,7 @@
 
 <style scoped>
   .cart-list {
-    height: calc(100% - 44px - 49px);/*父元素.cart需要有确定视口高度*/
+    height: calc(100% - 44px - 49px - 40px);/*父元素.cart需要有确定视口高度*/
   }
   .content {
     height: 100%;

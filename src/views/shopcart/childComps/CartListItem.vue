@@ -51,7 +51,7 @@
   }
 
   .item-selector {
-    width: 14%;
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;

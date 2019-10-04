@@ -7,6 +7,7 @@
     <!--商品的列表-->
     <cart-list/>
     <!--底部汇总-->
+    <cart-bottom-bar/>
 
   </div>
 </template>
@@ -14,6 +15,7 @@
 <script>
   import NavBar from 'components/common/navbar/NavBar'
   import cartList from './childComps/CartList'
+  import CartBottomBar from './childComps/CartBottomBar'
 
   import {mapGetters} from 'vuex'
   // 从vuex框架中导入
@@ -22,7 +24,8 @@
     name: 'Shopcart',
     components: {
       NavBar,
-      cartList
+      cartList,
+      CartBottomBar
     },
     computed: {
       // mapGetters辅助函数将store中的getter映射到局部计算属性

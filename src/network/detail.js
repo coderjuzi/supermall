@@ -20,7 +20,7 @@ export class Goods {// 导出商品详情
     this.discount = itemInfo.discountDesc;
     this.columns = columns;
     this.services = services;
-    this.realPrice = itemInfo.lowNowPrice;// 购物车中的实际价格
+    this.nowPrice = itemInfo.highNowPrice;// 购物车中的实际价格
   }
 }
 // 整合店铺信息
