@@ -20,10 +20,10 @@
 <style scoped>
   .check-button {
     border-radius: 50%;
-    border: 2px solid var(--color-tint);
+    border: 2px solid #ccc;
   }
   .check {/*按钮选中后边框颜色*/
-    border-color: red;
+    border-color: var(--color-tint);
     background-color: var(--color-tint);
   }
 </style>

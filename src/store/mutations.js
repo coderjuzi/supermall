@@ -10,6 +10,7 @@ export default {
     payload.count++
   },
   [ADD_TO_CART](state, payload) {
+    payload.checked = true// CheckButton默认为选中
     state.cartList.push(payload)
   }
 }
