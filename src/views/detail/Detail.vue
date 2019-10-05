@@ -42,6 +42,8 @@
   import {debounce} from 'common/utils'
   import {backTopMixin} from 'common/mixins'
 
+  import { mapActions } from 'vuex'
+
   export default {
     name: "Detail",
     components: {
@@ -124,6 +126,7 @@
       this.$bus.$off('itemImageLoad', this.itemImgListener)
     },
     methods: {
+      ...mapActions(['addCart']),// 数组映射addCart函数
       imageLoad() {// 图片加载完后进行刷新，避免出现因高度问题而无法滚动
         this.$refs.scroll.refresh()
         this.getThemeTopY()// 调用防抖函数
@@ -163,10 +166,17 @@
         product.desc = this.goods.desc;
         product.newPrice = this.goods.nowPrice;
 
-        // 2. 将商品添加到购物车里
+        // 2. 将商品添加到购物车里（知识点：1.Promise  2.mapActions）
         // this.$store.cartList.push(product)
         // this.$store.commit('addCart', product)
-        this.$store.dispatch('addCart', product)// actions需要用dispatch调用
+        this.addCart(product).then(res => {
+          console.log(res);
+        })
+
+        // actions需要用dispatch调用
+        // this.$store.dispatch('addCart', product).then(res => {
+        //   console.log(res);// 显示两种不同的回调信息
+        // })
       }
     }
   }
