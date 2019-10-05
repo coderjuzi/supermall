@@ -1,14 +1,16 @@
 <template>
   <div class="bottom-bar">
     <div class="check-content">
-      <check-button :is-checked="isSelectAll" class="check-button"/>
+      <check-button
+        :is-checked="isSelectAll"
+        class="check-button" @click.native="checkClick"/>
       <span>全选</span>
     </div>
     <div class="total-price">
-      合计： {{totalPrice}}
+      合计：{{totalPrice}}
     </div>
     <div class="calculate">
-      去结算({{checkedLength}})
+      去结算({{checkLength}})
     </div>
   </div>
 </template>
@@ -32,12 +34,12 @@
           return preValue + item.newPrice * item.count // 返回总价格
         }, 0).toFixed(2)// 保留两位小数
       },
-      checkedLength() {
+      checkLength() {
         return this.cartList.filter(item => item.checked).length
       },
       isSelectAll() {// 添加计算属性，判断是否全部选中
         // 判断，如果购物车为空，则返回false
-        if(this.cartList.length === 0) return false
+        if (this.cartList.length === 0) return false
 
         // 方法一：使用高阶函数filter
         // 从数组中找到未选中的item，如果有则数组有长度，取反，返回false
@@ -55,13 +57,22 @@
         // }
         // return true
       }
+    },
+    methods: {
+      checkClick() {// 添加全选点击监听的方法
+        if (this.isSelectAll) {// 全部选中
+          this.cartList.forEach(item => item.checked = false)
+        } else { // 部分或全部不选中
+          this.cartList.forEach(item => item.checked = true)
+        }
+      }
     }
   }
 </script>
 
 <style scoped>
   .bottom-bar {
-    position: relative;/*相对定位*/
+    position: relative; /*相对定位*/
     display: flex;
 
     height: 40px;
