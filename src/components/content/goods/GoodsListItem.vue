@@ -3,7 +3,8 @@
   <div class="goods-item" @click="itemClick">
     <!--原生JS监听图片: img.onload = function() {}-->
     <!--Vue使用@load监听每一张图片加载完成，执行imageLoad方法-->
-    <img :src="showImage" alt="" @load="imageLoad">
+    <!--使用v-lazy代替:src实现图片懒加载-->
+    <img v-lazy="showImage" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
