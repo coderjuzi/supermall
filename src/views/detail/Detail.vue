@@ -22,6 +22,7 @@
     <!--@是v-on的语法糖-->
     <detail-bottom-bar @addToCart="addToCart"/>
     <back-top @click.native="backTop" v-show="isShowBackTop"/>
+    <!--<toast :message="message" :show="show"/>-->
   </div>
 </template>
 
@@ -37,6 +38,7 @@
 
   import Scroll from 'components/common/scroll/Scroll'
   import GoodsList from 'components/content/goods/GoodsList'
+  // import Toast from 'components/common/toast/Toast'
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
   import {debounce} from 'common/utils'
@@ -56,7 +58,8 @@
       DetailCommentInfo,
       DetailBottomBar,
       Scroll,
-      GoodsList
+      GoodsList,
+      // Toast
     },
     mixins: [backTopMixin],
     data() {// 保存iid
@@ -71,7 +74,9 @@
         recommends: [],
         themeTopYs: [],// 导航栏中4个对象对应的高度
         getThemeTopY: null,
-        currentIndex: 0
+        currentIndex: 0,
+        // message: '',
+        // show: false
       }
     },
     created() {
@@ -170,7 +175,16 @@
         // this.$store.cartList.push(product)
         // this.$store.commit('addCart', product)
         this.addCart(product).then(res => {
-          console.log(res);
+          // this.show = true;// 显示Toast
+          // this.message = res;// 改变提示信息
+          //
+          // setTimeout(() => {// 添加定时器，让Toast在1.5秒后消失
+          //   this.show = false;// 关闭Toast
+          //   this.message = ''// 清空提示信息
+          // }, 1500)
+          this.$toast.show(res, 1500)
+
+          console.log(this.$toast);
         })
 
         // actions需要用dispatch调用
